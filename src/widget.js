@@ -27,19 +27,77 @@ Stage.defineWidget({
       type: Stage.Basic.GenericField.STRING_TYPE
     },
     {
-      id: 'columnsToShow',
-      name: 'List of Columns to show in the table',
-      placeHolder: 'Select Column from the list',
-      items: ['Blueprint', 'Created', 'Updated', 'Creator'],
-      default: 'Blueprint,Created,Updated,Creator',
-      type: Stage.Basic.GenericField.MULTI_SELECT_LIST_TYPE
-    },
-    {
       id: 'template',
       name: 'Template to Redirect on click',
       default: 'deployment',
       placeHolder: 'Enter Template Name you want to redirect to',
       type: Stage.Basic.GenericField.STRING_TYPE
+    },
+    {
+      id: 'columns',
+      name: 'Custom Columns Output Sources',
+      description: 'get the source from blueprint output, you can access it by chain, for example: output.status',
+      default: [
+        {label: 'Blueprint', source: 'blueprint_id'},
+        {label: 'Created', source: 'created_at'},
+        {label: 'Updated', source: 'updated_at'},
+        {label: 'Creator', source: 'created_by'}
+      ],
+      type: Stage.Basic.GenericField.EDITABLE_TABLE_TYPE,
+      max: 10,
+      items: [
+        {
+          name: 'label',
+          label: 'Label',
+          default: '',
+          type: Stage.Basic.GenericField.STRING_TYPE,
+          description: 'the label to display on column header.'
+        },
+        {
+          name: 'source',
+          label: 'Source',
+          default: '',
+          type: Stage.Basic.GenericField.STRING_TYPE,
+          description: 'the source to get the data from, ex: output.status'
+        }
+      ]
+    },
+    {
+      id: 'buttons',
+      name: 'Custom Action Buttons',
+      default: '',
+      type: Stage.Basic.GenericField.EDITABLE_TABLE_TYPE,
+      max: 5,
+      items: [
+        {
+          name: 'label',
+          label: 'Label',
+          default: '',
+          type: Stage.Basic.GenericField.STRING_TYPE,
+          description: 'the label to display on the button.'
+        },
+        {
+          name: 'workflow',
+          label: 'Workflow',
+          default: '',
+          type: Stage.Basic.GenericField.STRING_TYPE,
+          description: 'the workflow to dispatch on click.'
+        },
+        {
+          name: 'condition',
+          label: 'Condition',
+          default: '',
+          type: Stage.Basic.GenericField.STRING_TYPE,
+          description: 'condition to view the color based on'
+        },
+        {
+          name: 'color',
+          label: 'Color',
+          items: ['red', 'orange', 'yellow', 'olive', 'green', 'teal', 'blue', 'violet', 'purple', 'pink', 'brown', 'grey', 'black'],
+          default: '',
+          type: Stage.Basic.GenericField.LIST_TYPE
+        }
+      ]
     },
   ],
 
@@ -86,7 +144,7 @@ Stage.defineWidget({
   },
 
   render: function (widget, data, error, toolbox) {
-
+    
     if (_.isEmpty(data)) {
       return <Stage.Basic.Loading />;
     }
