@@ -20,6 +20,8 @@ Stage.defineWidget({
   initialConfiguration: [
     Stage.GenericConfig.POLLING_TIME_CONFIG(5),
     Stage.GenericConfig.PAGE_SIZE_CONFIG(),
+    Stage.GenericConfig.SORT_COLUMN_CONFIG('created_at'),
+    Stage.GenericConfig.SORT_ASCENDING_CONFIG(true),
     {
       id: 'blueprintIdFilter',
       name: 'Blueprint ID to filter by',
@@ -58,7 +60,7 @@ Stage.defineWidget({
           label: 'Source',
           default: '',
           type: Stage.Basic.GenericField.STRING_TYPE,
-          description: 'the source to get the data from, ex: output.status'
+          description: 'the source to get the data from, ex: outputs.status and you can use operators outputs.cputotal-outputs.cpumax'
         }
       ]
     },
@@ -88,7 +90,17 @@ Stage.defineWidget({
           label: 'Condition',
           default: '',
           type: Stage.Basic.GenericField.STRING_TYPE,
-          description: 'condition to view the color based on'
+          description: `condition to view the button based on, examples: exist(arg1)
+          equal(arg1, arg2)
+          lg(arg1, arg2)
+          lt(arg1, arg2)
+          lge(arg1, arg2)
+          lte(arg1, arg2)
+          count(arg1, arg2)
+          between(arg1, arg2, arg3)
+
+          also you can use operators inside arguments ex: 
+          equal(totalCPU-usedCPU, value)`
         },
         {
           name: 'color',

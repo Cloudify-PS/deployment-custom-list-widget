@@ -196,13 +196,14 @@ export default class PluginsCatalogList extends React.Component {
     const {DataTable, PrivateMarker, Button, ErrorMessage} = Stage.Basic;
     const {ExecuteDeploymentModal} = Stage.Common;
     const tableName = 'deploymentsTable';
-    const columnsToShow = this.props.widget.configuration.columnsToShow;
+    // const columnsToShow = this.props.widget.configuration.columnsToShow;
     let columns = this.props.widget.configuration.columns;
     columns = _.chain(columns).filter((item) => !_.isEmpty(item.source)).value();
 
     let buttons = this.props.widget.configuration.buttons;
     buttons = _.chain(buttons).filter((item) => !_.isEmpty(item.workflow)).value();
 
+    
     // console.log('this.props', this.props)
     // console.log('columns', columns)
     // console.log('buttons', buttons)
@@ -229,7 +230,7 @@ export default class PluginsCatalogList extends React.Component {
         <DataTable.Column label={_.get(columns, '7.label')} show={!!_.get(columns, '7.label', )} />
         <DataTable.Column label={_.get(columns, '8.label')} show={!!_.get(columns, '8.label', )} />
         <DataTable.Column label={_.get(columns, '9.label')} show={!!_.get(columns, '9.label', )} />
-        <DataTable.Column label="Actions" width="20%" show={columnsToShow.includes('Actions')} />
+        <DataTable.Column label="Actions" width="20%" show={buttons.length} />
 
         {
           this.props.data.items.map((item) => {
