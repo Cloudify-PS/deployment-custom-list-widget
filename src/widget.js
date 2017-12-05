@@ -151,12 +151,22 @@ Stage.defineWidget({
       });
       formattedData.total = _.get(deploymentData, 'metadata.pagination.total', 0);
 
-      return Promise.resolve(formattedData);
+      // evaluate the outputs
+      let outputPromises = formattedData.items.map(item => toolbox.getManager().doGet(`/deployments/${item.id}/outputs`))
+      return Promise.all(outputPromises).then(outputs => {
+        formattedData.items = formattedData.items.map((i, idx) => {
+          i.outputs = outputs[idx].outputs;
+          return i;
+        })
+        return formattedData;
+      });
+
+      // return Promise.resolve(formattedData);
     })
   },
 
   render: function (widget, data, error, toolbox) {
-    
+    console.log('listing data is', data);
     if (_.isEmpty(data)) {
       return <Stage.Basic.Loading />;
     }

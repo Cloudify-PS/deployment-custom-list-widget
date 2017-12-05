@@ -7,7 +7,7 @@ import ActiveExecutionStatus from './ActiveExecutionStatus';
  * @class List
  * @extends {Component}
  */
-export default class PluginsCatalogList extends React.Component {
+export default class List extends React.Component {
   /**
    * Creates an instance of List.
    * @param {any} props 
@@ -230,7 +230,7 @@ export default class PluginsCatalogList extends React.Component {
         <DataTable.Column label={_.get(columns, '7.label')} show={!!_.get(columns, '7.label', )} />
         <DataTable.Column label={_.get(columns, '8.label')} show={!!_.get(columns, '8.label', )} />
         <DataTable.Column label={_.get(columns, '9.label')} show={!!_.get(columns, '9.label', )} />
-        <DataTable.Column label="Actions" width="20%" show={buttons.length} />
+        <DataTable.Column label="Actions" width="20%" show={!!buttons.length} />
 
         {
           this.props.data.items.map((item) => {
@@ -257,7 +257,8 @@ export default class PluginsCatalogList extends React.Component {
                     _.isEmpty(item.executions)
                       ?
                       <div>
-                        {buttons.map(button => this._parseCondition(button.condition, item) && <Button
+                        {buttons.map((button, key) => this._parseCondition(button.condition, item) && <Button
+                          key={key}
                           color={button.color}
                           size='mini'
                           onClick={this.runExecution.bind(this, button.workflow, item)}
