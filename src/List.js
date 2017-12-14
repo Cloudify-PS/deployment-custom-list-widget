@@ -91,6 +91,9 @@ export default class List extends React.Component {
     if (!data) {
       return '--'
     }
+    if(typeof data === 'object'){
+      data = JSON.stringify(data);
+    }
     return data;
   }
 
@@ -125,12 +128,18 @@ export default class List extends React.Component {
         
         tpl = final;
       } else {
-        tpl = _.get(item, tpl);
+        // console.log('templating', tpl, item)
+        if(tpl.indexOf('"') === 0 || tpl.indexOf("'") === 0){
+          tpl = tpl.slice(1, -1);
+        }else{
+          tpl = _.get(item, tpl);
+        }
       }
     }
-    if (!isNaN(tpl)) { // another if coz we need to check again for the getters value
+    if (!isNaN(tpl) && tpl !== null) { // another if coz we need to check again for the getters value
       tpl = Number(tpl);
     }
+    // console.log('tpl', tpl)
     return tpl;
   }
 
@@ -141,35 +150,50 @@ export default class List extends React.Component {
 
     const regex = /(.*)\((.*)\)/g;
     const m = regex.exec(condition);
-    const func = m[1].trim();
+    let func = m[1].trim();
     const params = m[2].split(',').map(p => this._parseTemplate(p, item));
+    let reverse = false;
+
+    if(func.indexOf('!') === 0){
+      func = func.substr(1);
+      reverse = true;
+    }
+
+    let ret = false;
 
     if(func === 'exist'){
-      return !_.isEmpty(params[0]);
+      ret = !_.isEmpty(params[0]);
     }
     if(func === 'empty'){
-      return _.isEmpty(params[0]);
+      ret = _.isEmpty(params[0]);
     }
     if (func === 'equal') {
-      return params[0] === params[1];
+      ret = params[0] === params[1];
+    }
+    if (func === 'contain') {
+      ret = params[1].split(':').map(i => i.trim()).includes(params[0]);
     }
     if (func === 'lg') {
-      return params[0] > params[1];
+      ret = params[0] > params[1];
     }
     if (func === 'lge') {
-      return params[0] >= params[1];
+      ret = params[0] >= params[1];
     }
     if (func === 'lt') {
-      return params[0] < params[1];
+      ret = params[0] < params[1];
     }
     if (func === 'lte') {
-      return params[0] <= params[1];
+      ret = params[0] <= params[1];
     }
     if (func === 'between') {
-      return params[1] <= params[0] && params[0] <= params[2];
+      ret = params[1] <= params[0] && params[0] <= params[2];
     }
 
-    return true;
+    if(reverse){
+      ret = !ret;
+    }
+
+    return ret;
     
     // exist(arg1)
     // equal(arg1, arg2)
@@ -179,6 +203,7 @@ export default class List extends React.Component {
     // lte(arg1, arg2)
     // count(arg1, arg2)
     // between(arg1, arg2, arg3)
+    // contain(arg1, 'set1:set2')
     // equal(totalCPU-usedCPU, value)
     // 
     // TODO: order by columns
