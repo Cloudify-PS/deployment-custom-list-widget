@@ -218,7 +218,7 @@ export default class List extends React.Component {
   |--------------------------------------------------------------------------
   */
   render() {
-    const {DataTable, PrivateMarker, Button, ErrorMessage} = Stage.Basic;
+    const {DataTable, ResourceVisibility, Button, ErrorMessage} = Stage.Basic;
     const {ExecuteDeploymentModal} = Stage.Common;
     const tableName = 'deploymentsTable';
     // const columnsToShow = this.props.widget.configuration.columnsToShow;
@@ -265,7 +265,7 @@ export default class List extends React.Component {
               <DataTable.Row id={`${tableName}_${item.id}`} key={item.id} selected={item.isSelected}>
                 <DataTable.Data>
                   <a className='deploymentName' href="javascript:void(0)" onClick={() => this._selectDeployment(item)}>{item.id}</a>
-                  <PrivateMarker availability={item.resource_availability} title="Private resource" />
+                  <ResourceVisibility visibility={item.visibility} />
                 </DataTable.Data>
                 <DataTable.Data>{this._getCustomData(columns, '0.source', item)}</DataTable.Data>
                 <DataTable.Data>{this._getCustomData(columns, '1.source', item)}</DataTable.Data>
